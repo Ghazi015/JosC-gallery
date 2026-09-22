@@ -14,3 +14,19 @@
     "date": "2025-01-20"
   }
 ]
+[
+  {
+    "id": 1,
+    "title": "Foto Lamaku",
+    "filename": "file_000000000ea48211 b1cdfc8d7baee41e.png",
+    "category": "Nature",
+    "date": "2025-01-15"
+  },
+  {
+    "id": 2,
+    "title": "Foto Baruku",
+    "filename": "foto-baru.jpg",
+    "category": "Lifestyle",
+    "date": "2025-06-01"
+  }
+]
