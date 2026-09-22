@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌸 Sakura Gallery</title>
+  <meta name="description" content="A feminine, minimalist photo gallery with sakura aesthetics." />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ============ SAKURA FALLING PETALS ============ -->
+  <div class="sakura-container" aria-hidden="true">
+    <!-- SVG petal shape repeated -->
+    <script>
+      // Generated dynamically so petals always show
+      document.addEventListener('DOMContentLoaded', () => {
+        const container = document.querySelector('.sakura-container');
+        const petalSVG = `
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#f8bbd9" opacity="0.7" transform="rotate(0 20 20)"/>
+            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#fce4ec" opacity="0.6" transform="rotate(72 20 20)"/>
+            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#f8bbd9" opacity="0.7" transform="rotate(144 20 20)"/>
+            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#fce4ec" opacity="0.6" transform="rotate(216 20 20)"/>
+            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#f8bbd9" opacity="0.7" transform="rotate(288 20 20)"/>
+            <circle cx="20" cy="20" r="4" fill="#ffcdd2" opacity="0.9"/>
+          </svg>`;
+        for (let i = 0; i < 12; i++) {
+          const div = document.createElement('div');
+          div.className = 'petal';
+          div.innerHTML = petalSVG;
+          container.appendChild(div);
+        }
+      });
+    </script>
+  </div>
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="wrapper">
+      <div class="header-inner">
+        <a href="index.html" class="site-logo">
+          <span class="logo-icon">🌸</span>
+          <div class="logo-text">
+            <h1>Sakura Gallery</h1>
+            <span>Beautiful Moments in Bloom</span>
+          </div>
+        </a>
+        <nav>
+          <a href="index.html" class="nav-link">Gallery</a>
+          <a href="#" class="nav-link" id="navAbout">About</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrapper">
+      <div class="hero-badge">
+        <span>🌸</span>
+        <span>Photo Collection</span>
+      </div>
+      <h2>A World of <em>Softness</em><br>& Delicate Beauty</h2>
+      <p>
+        Koleksi foto indah yang dikurasi dengan penuh cinta,
+        tersaji dalam nuansa lembut yang menenangkan jiwa.
+      </p>
+      <div class="sakura-divider">
+        <span>🌸</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY SECTION ============ -->
+  <section class="gallery-section">
+    <div class="wrapper">
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+          <div class="filter-buttons" id="filterButtons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <!-- Categories populated dynamically -->
+          </div>
+          <span class="gallery-count">
+            Menampilkan <span id="photoCount">0</span> foto
+          </span>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            class="search-input"
+            id="searchInput"
+            placeholder="Cari foto..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <!-- Photo Grid -->
+      <div class="photo-grid" id="photoGrid">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Memuat koleksi foto...</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ LIGHTBOX ============ -->
+  <div class="lightbox-overlay" id="lightboxOverlay" role="dialog" aria-modal="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Tutup">✕</button>
+    <div class="lightbox-box">
+      <div class="lightbox-img-wrap">
+        <img src="" alt="" id="lightboxImg" />
+      </div>
+      <div class="lightbox-info">
+        <div>
+          <div class="hero-badge" style="margin-bottom:14px;">
+            <span>🌸</span>
+            <span id="lightboxCategory">Category</span>
+          </div>
+          <h2 class="lightbox-title" id="lightboxTitle">Photo Title</h2>
+          <p class="lightbox-meta" id="lightboxMeta">📅 Date</p>
+          <div class="lightbox-divider"></div>
+          <p style="font-size:0.85rem; color:var(--gray-text); line-height:1.7; margin-bottom:24px;">
+            Setiap foto adalah momen yang tersimpan abadi,
+            seperti kelopak sakura yang jatuh dengan elegan.
+          </p>
+        </div>
+        <div class="lightbox-actions">
+          <a href="" id="lightboxDownload" download class="btn-primary">
+            ⬇️ &nbsp;Download Foto
+          </a>
+          <button
+            class="btn-download"
+            id="lightboxClose2"
+            style="justify-content:center;"
+          >
+            ✕ &nbsp;Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TOAST ============ -->
+  <div class="toast" id="toast">
+    <span id="toastIcon">🌸</span>
+    <span id="toastMsg">Berhasil!</span>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="wrapper">
+      <div class="footer-inner">
+        <div class="footer-logo">🌸 Sakura Gallery</div>
+        <div class="footer-petals">🌸 🌸 🌸</div>
+        <div class="footer-text">
+          Crafted with love &amp; petals · Static Photo Gallery<br />
+          <span style="font-size:0.7rem;">
+            Untuk mengakses panel admin, kunjungi
+            <a href="admin.html" style="color:#c06080; text-decoration:none;">halaman admin</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="js/gallery.js"></script>
+</body>
+</html>

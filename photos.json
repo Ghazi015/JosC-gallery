@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "title": "Sakura Morning",
+    "filename": "sakura-morning.jpg",
+    "category": "Nature",
+    "date": "2025-01-15"
+  },
+  {
+    "id": 2,
+    "title": "Pink Blossom",
+    "filename": "pink-blossom.jpg",
+    "category": "Flower",
+    "date": "2025-01-20"
+  }
+]
