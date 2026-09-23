@@ -1,186 +1,751 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌸 Sakura Gallery</title>
-  <meta name="description" content="A feminine, minimalist photo gallery with sakura aesthetics." />
-  
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>" />
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="JOSC Gallery — Galeri Foto & Kenangan Indah yang Tersimpan dengan Cantik"/>
+<meta name="theme-color" content="#ec4899"/>
+<meta property="og:title" content="JOSC Gallery 🌸"/>
+<meta property="og:description" content="Galeri foto pribadi yang menyimpan kenangan indah"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://ui-avatars.com/api/?name=JOSC&background=f9a8c9&color=fff&size=600&bold=true"/>
+<title>JOSC Gallery 🌸</title>
+
+<!-- Preconnect -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<!-- Styles -->
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-  <!-- ============ SAKURA FALLING PETALS ============ -->
-  <div class="sakura-container" aria-hidden="true">
-    <!-- SVG petal shape repeated -->
-    <script>
-      // Generated dynamically so petals always show
-      document.addEventListener('DOMContentLoaded', () => {
-        const container = document.querySelector('.sakura-container');
-        const petalSVG = `
-          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#f8bbd9" opacity="0.7" transform="rotate(0 20 20)"/>
-            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#fce4ec" opacity="0.6" transform="rotate(72 20 20)"/>
-            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#f8bbd9" opacity="0.7" transform="rotate(144 20 20)"/>
-            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#fce4ec" opacity="0.6" transform="rotate(216 20 20)"/>
-            <ellipse cx="20" cy="12" rx="9" ry="14" fill="#f8bbd9" opacity="0.7" transform="rotate(288 20 20)"/>
-            <circle cx="20" cy="20" r="4" fill="#ffcdd2" opacity="0.9"/>
-          </svg>`;
-        for (let i = 0; i < 12; i++) {
-          const div = document.createElement('div');
-          div.className = 'petal';
-          div.innerHTML = petalSVG;
-          container.appendChild(div);
-        }
-      });
-    </script>
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar" id="announceBar">
+  <div class="ab-inner">
+    <div class="ab-pulse"></div>
+    <span class="ab-icon">🌸</span>
+    <span class="ab-text" id="abText">Selamat datang di JOSC Gallery! Klik foto untuk melihat versi penuh.</span>
+    <button class="ab-close" id="abClose" aria-label="Tutup">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+</div>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="ls-bg"></div>
+  <div class="ls-inner">
+    <div class="ls-petals" aria-hidden="true">
+      <span style="--d:0s;--x:10%;--s:1">🌸</span>
+      <span style="--d:.3s;--x:30%;--s:.7">🌸</span>
+      <span style="--d:.6s;--x:50%;--s:1.2">🌸</span>
+      <span style="--d:.9s;--x:70%;--s:.8">🌸</span>
+      <span style="--d:1.2s;--x:90%;--s:1">🌸</span>
+    </div>
+    <div class="ls-logo-wrap">
+      <div class="ls-logo-icon">🌸</div>
+      <div class="ls-logo">JOSC Gallery</div>
+    </div>
+    <div class="ls-bar-wrap">
+      <div class="ls-bar"><div class="ls-fill" id="lsFill"></div></div>
+      <p class="ls-percent" id="lsPercent">0%</p>
+    </div>
+    <p class="ls-text" id="lsText">Memuat kenangan indah...</p>
+  </div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- CUSTOM CURSOR (desktop only) -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- FLOATING PETALS -->
+<div id="petalsContainer" aria-hidden="true"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar" role="navigation" aria-label="Navigasi utama">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand" aria-label="JOSC Gallery - Beranda">
+      <div class="nb-icon" aria-hidden="true">🌸</div>
+      <span class="nb-text">JOSC Gallery</span>
+    </a>
+
+    <div class="nav-links" role="menubar">
+      <a href="#profile" class="nav-link" role="menuitem">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+        <span>Profil</span>
+      </a>
+      <a href="#about" class="nav-link" role="menuitem">
+        <i class="fa-solid fa-star" aria-hidden="true"></i>
+        <span>Tentang</span>
+      </a>
+      <a href="#gallery" class="nav-link" role="menuitem">
+        <i class="fa-solid fa-images" aria-hidden="true"></i>
+        <span>Galeri</span>
+      </a>
+      <a href="reine_josc2004.html" class="nav-link nav-admin" role="menuitem">
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        <span>Admin</span>
+      </a>
+    </div>
+
+    <div class="nav-actions">
+      <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <span class="dt-icon-wrap">
+          <i class="fa-solid fa-moon dt-moon" id="dtMoon" aria-hidden="true"></i>
+          <i class="fa-solid fa-sun dt-sun" id="dtSun" aria-hidden="true"></i>
+        </span>
+      </button>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Buka menu" aria-expanded="false" aria-controls="navMobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 
-  <!-- ============ HEADER ============ -->
-  <header>
-    <div class="wrapper">
-      <div class="header-inner">
-        <a href="index.html" class="site-logo">
-          <span class="logo-icon">🌸</span>
-          <div class="logo-text">
-            <h1>Sakura Gallery</h1>
-            <span>Beautiful Moments in Bloom</span>
-          </div>
+  <!-- Mobile Menu -->
+  <div class="nav-mobile" id="navMobile" role="menu" aria-label="Menu mobile">
+    <a href="#profile" class="nm-link" role="menuitem">
+      <i class="fa-solid fa-user" aria-hidden="true"></i> Profil
+    </a>
+    <a href="#about" class="nm-link" role="menuitem">
+      <i class="fa-solid fa-star" aria-hidden="true"></i> Tentang
+    </a>
+    <a href="#gallery" class="nm-link" role="menuitem">
+      <i class="fa-solid fa-images" aria-hidden="true"></i> Galeri
+    </a>
+    <a href="reine_josc2004.html" class="nm-link" role="menuitem">
+      <i class="fa-solid fa-lock" aria-hidden="true"></i> Admin
+    </a>
+    <div class="nm-divider" role="separator"></div>
+    <button class="nm-dark-toggle" id="nmDarkToggle" aria-label="Toggle mode gelap">
+      <i class="fa-solid fa-moon" id="nmDarkIcon" aria-hidden="true"></i>
+      <span id="nmDarkText">Mode Gelap</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="profile" aria-label="Profil">
+  <!-- Background layers -->
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-bg-gradient"></div>
+    <div class="hero-bg-mesh"></div>
+    <div class="hero-bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="orb orb-4"></div>
+    </div>
+  </div>
+
+  <!-- Particles -->
+  <div class="hero-particles" id="heroParticles" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <!-- Avatar -->
+    <div class="avatar-wrap reveal" role="img" aria-label="Foto profil">
+      <div class="avatar-rings" aria-hidden="true">
+        <div class="avatar-ring r1"></div>
+        <div class="avatar-ring r2"></div>
+        <div class="avatar-ring r3"></div>
+      </div>
+      <div class="avatar-frame">
+        <img src="" alt="Foto Profil JOSC Gallery" class="avatar-img" id="avatarImg"
+             onerror="this.src='https://ui-avatars.com/api/?name=JOSC&background=f9a8c9&color=fff&size=300&bold=true'"/>
+        <div class="avatar-glow" aria-hidden="true"></div>
+      </div>
+      <div class="avatar-badge" aria-hidden="true">🌸</div>
+      <div class="avatar-status" aria-label="Status: Aktif">
+        <span class="status-dot"></span>
+        <span class="status-text">Aktif</span>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="hero-bio">
+      <div class="hero-tag reveal" aria-hidden="true">
+        <span class="tag-star">✦</span>
+        <span>Selamat Datang</span>
+        <span class="tag-star">✦</span>
+      </div>
+
+      <h1 class="hero-name reveal" id="heroName">JOSC Gallery</h1>
+
+      <p class="hero-tagline reveal" aria-live="polite">
+        <i class="fa-solid fa-camera-retro" aria-hidden="true"></i>
+        <span id="typewriterText"></span>
+        <span class="tw-cursor" aria-hidden="true">|</span>
+      </p>
+
+      <p class="hero-desc reveal" id="heroDesc">
+        Sebuah galeri foto pribadi yang menyimpan kenangan, kegiatan,
+        dan momen berharga. Setiap foto punya cerita — dan di sini,
+        semua cerita itu tersimpan dengan indah. 🌸
+      </p>
+
+      <!-- Stats -->
+      <div class="hero-stats reveal" role="list" aria-label="Statistik galeri">
+        <div class="stat-item" role="listitem">
+          <span class="stat-num" id="statPhotos" aria-label="Jumlah foto">0</span>
+          <span class="stat-label">Foto</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item" role="listitem">
+          <span class="stat-num" id="statCats" aria-label="Jumlah kategori">0</span>
+          <span class="stat-label">Kategori</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item" role="listitem">
+          <span class="stat-num" aria-label="Kenangan">💖</span>
+          <span class="stat-label">Kenangan</span>
+        </div>
+      </div>
+
+      <!-- Social Links -->
+      <div class="social-section reveal">
+        <div class="social-label-wrap">
+          <div class="social-line" aria-hidden="true"></div>
+          <span class="social-label">Temukan Saya</span>
+          <div class="social-line" aria-hidden="true"></div>
+        </div>
+        <div class="social-links" role="list" aria-label="Tautan sosial media">
+          <a href="#" class="social-btn soc-ig" id="socIg" target="_blank" rel="noopener noreferrer" aria-label="Ikuti di Instagram" role="listitem">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            <span>Instagram</span>
+          </a>
+          <a href="#" class="social-btn soc-tt" id="socTt" target="_blank" rel="noopener noreferrer" aria-label="Ikuti di TikTok" role="listitem">
+            <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+            <span>TikTok</span>
+          </a>
+          <a href="#" class="social-btn soc-tw" id="socTw" target="_blank" rel="noopener noreferrer" aria-label="Ikuti di Twitter/X" role="listitem">
+            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            <span>Twitter</span>
+          </a>
+          <a href="#" class="social-btn soc-fb" id="socFb" target="_blank" rel="noopener noreferrer" aria-label="Ikuti di Facebook" role="listitem">
+            <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+            <span>Facebook</span>
+          </a>
+          <a href="#" class="social-btn soc-yt" id="socYt" target="_blank" rel="noopener noreferrer" aria-label="Ikuti di YouTube" role="listitem">
+            <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            <span>YouTube</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="hero-ctas reveal">
+        <a href="#gallery" class="hero-cta cta-primary">
+          <i class="fa-solid fa-images" aria-hidden="true"></i>
+          <span>Lihat Galeri</span>
+          <div class="cta-shine" aria-hidden="true"></div>
         </a>
-        <nav>
-          <a href="index.html" class="nav-link">Gallery</a>
-          <a href="#" class="nav-link" id="navAbout">About</a>
+        <a href="#about" class="hero-cta cta-secondary">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+          <span>Tentang Kami</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" aria-label="Scroll ke bawah">
+    <div class="si-mouse" aria-hidden="true">
+      <div class="si-wheel"></div>
+    </div>
+    <span>Scroll</span>
+  </div>
+
+  <!-- Wave -->
+  <div class="hero-wave" aria-hidden="true">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,60 C180,120 360,0 540,60 C720,120 900,0 1080,60 C1260,120 1380,80 1440,60 L1440,120 L0,120 Z" fill="var(--bg-main)"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ==================== COUNTER ==================== -->
+<section class="counter-section" aria-label="Statistik">
+  <div class="counter-inner">
+    <div class="counter-card reveal" role="article">
+      <div class="cc-icon-wrap" aria-hidden="true">
+        <span class="cc-icon">📸</span>
+        <div class="cc-glow"></div>
+      </div>
+      <div class="cc-content">
+        <div class="cc-num" id="ccPhotos" aria-label="Total foto">0</div>
+        <div class="cc-label">Total Foto</div>
+      </div>
+    </div>
+    <div class="counter-card reveal" role="article">
+      <div class="cc-icon-wrap" aria-hidden="true">
+        <span class="cc-icon">🗂️</span>
+        <div class="cc-glow"></div>
+      </div>
+      <div class="cc-content">
+        <div class="cc-num" id="ccCats" aria-label="Total kategori">0</div>
+        <div class="cc-label">Kategori</div>
+      </div>
+    </div>
+    <div class="counter-card reveal" role="article">
+      <div class="cc-icon-wrap" aria-hidden="true">
+        <span class="cc-icon">☁️</span>
+        <div class="cc-glow"></div>
+      </div>
+      <div class="cc-content">
+        <div class="cc-num">Cloud</div>
+        <div class="cc-label">Penyimpanan</div>
+      </div>
+    </div>
+    <div class="counter-card reveal" role="article">
+      <div class="cc-icon-wrap" aria-hidden="true">
+        <span class="cc-icon">🌸</span>
+        <div class="cc-glow"></div>
+      </div>
+      <div class="cc-content">
+        <div class="cc-num">∞</div>
+        <div class="cc-label">Kenangan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ABOUT ==================== -->
+<section class="about-section" id="about" aria-label="Tentang JOSC Gallery">
+  <div class="about-inner">
+    <!-- Left -->
+    <div class="about-left reveal">
+      <div class="about-badge" aria-label="Badge tentang gallery">
+        <span>🌸</span> Tentang Gallery
+      </div>
+      <h2 class="about-title">
+        Tempat Terbaik<br/>
+        <span class="title-highlight">Simpan Kenangan</span>
+      </h2>
+      <p class="about-desc">
+        Gallery ini hadir untuk menyimpan dan berbagi setiap momen berharga.
+        Dari kegiatan sehari-hari hingga momen spesial — semuanya terabadikan
+        dengan indah di satu tempat yang cantik.
+      </p>
+      <ul class="about-features" role="list">
+        <li class="af-item" role="listitem">
+          <div class="af-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <span>Foto kualitas tinggi tanpa kompresi berlebihan</span>
+        </li>
+        <li class="af-item" role="listitem">
+          <div class="af-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <span>Terorganisir berdasarkan kategori secara otomatis</span>
+        </li>
+        <li class="af-item" role="listitem">
+          <div class="af-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <span>Bisa diunduh kapan saja dan di mana saja</span>
+        </li>
+        <li class="af-item" role="listitem">
+          <div class="af-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <span>Aman tersimpan di cloud selamanya</span>
+        </li>
+      </ul>
+      <a href="#gallery" class="about-cta">
+        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        Jelajahi Galeri
+      </a>
+    </div>
+
+    <!-- Right -->
+    <div class="about-right reveal">
+      <div class="feature-grid" role="list">
+        <div class="feature-card" role="listitem">
+          <div class="fc-icon-wrap" aria-hidden="true">
+            <i class="fa-solid fa-camera"></i>
+            <div class="fc-glow"></div>
+          </div>
+          <h3 class="fc-title">Foto HD</h3>
+          <p class="fc-desc">Kualitas terbaik tersimpan di cloud Cloudinary</p>
+        </div>
+        <div class="feature-card" role="listitem">
+          <div class="fc-icon-wrap" aria-hidden="true">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="fc-glow"></div>
+          </div>
+          <h3 class="fc-title">Pencarian</h3>
+          <p class="fc-desc">Temukan foto dengan cepat pakai fitur search</p>
+        </div>
+        <div class="feature-card" role="listitem">
+          <div class="fc-icon-wrap" aria-hidden="true">
+            <i class="fa-solid fa-tags"></i>
+            <div class="fc-glow"></div>
+          </div>
+          <h3 class="fc-title">Kategori</h3>
+          <p class="fc-desc">Foto terkelompok rapi berdasarkan kategori</p>
+        </div>
+        <div class="feature-card" role="listitem">
+          <div class="fc-icon-wrap" aria-hidden="true">
+            <i class="fa-solid fa-download"></i>
+            <div class="fc-glow"></div>
+          </div>
+          <h3 class="fc-title">Download</h3>
+          <p class="fc-desc">Unduh foto kapanpun tanpa batas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MARQUEE ==================== -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="marquee-content">
+      <span>🌸 Kenangan Indah</span>
+      <span>📸 Foto Berkualitas</span>
+      <span>💖 Momen Berharga</span>
+      <span>🌷 Gallery Pribadi</span>
+      <span>✨ Abadikan Saat Ini</span>
+      <span>🎀 Penuh Kasih Sayang</span>
+      <span>🌸 Kenangan Indah</span>
+      <span>📸 Foto Berkualitas</span>
+      <span>💖 Momen Berharga</span>
+      <span>🌷 Gallery Pribadi</span>
+      <span>✨ Abadikan Saat Ini</span>
+      <span>🎀 Penuh Kasih Sayang</span>
+    </div>
+    <div class="marquee-content" aria-hidden="true">
+      <span>🌸 Kenangan Indah</span>
+      <span>📸 Foto Berkualitas</span>
+      <span>💖 Momen Berharga</span>
+      <span>🌷 Gallery Pribadi</span>
+      <span>✨ Abadikan Saat Ini</span>
+      <span>🎀 Penuh Kasih Sayang</span>
+      <span>🌸 Kenangan Indah</span>
+      <span>📸 Foto Berkualitas</span>
+      <span>💖 Momen Berharga</span>
+      <span>🌷 Gallery Pribadi</span>
+      <span>✨ Abadikan Saat Ini</span>
+      <span>🎀 Penuh Kasih Sayang</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GALLERY ==================== -->
+<section class="gallery-section" id="gallery" aria-label="Galeri foto">
+  <!-- Header -->
+  <div class="section-header reveal">
+    <div class="section-badge" aria-hidden="true">🌸 Koleksi Foto</div>
+    <h2 class="section-title">Galeri Kenangan</h2>
+    <p class="section-sub">Klik foto untuk melihat versi penuh · Scroll untuk memuat lebih banyak</p>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="gallery-toolbar reveal">
+    <div class="search-wrap" role="search">
+      <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+      <input
+        type="search"
+        id="searchInput"
+        class="search-input"
+        placeholder="Cari foto, kategori..."
+        autocomplete="off"
+        aria-label="Cari foto"
+        spellcheck="false"
+      />
+      <button class="search-clear" id="searchClear" aria-label="Hapus pencarian">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <select id="sortSelect" class="sort-select" aria-label="Urutan foto">
+      <option value="newest">🕐 Terbaru</option>
+      <option value="oldest">🕛 Terlama</option>
+      <option value="az">🔤 A–Z</option>
+    </select>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-wrap reveal">
+    <div class="filter-scroll" id="categoryFilters" role="group" aria-label="Filter kategori">
+      <button class="filter-btn active" data-cat="all" aria-pressed="true">
+        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+        <span>Semua</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Info Bar -->
+  <div class="gallery-info-bar" aria-live="polite">
+    <div class="gib-left">
+      <i class="fa-solid fa-image" aria-hidden="true"></i>
+      Menampilkan <strong id="shownCount">0</strong> dari <strong id="totalCount">0</strong> foto
+      · <span id="totalCat">0</span> kategori
+    </div>
+    <div class="gib-right">
+      <button class="view-toggle active" id="viewGrid" title="Tampilan Grid (G)" aria-label="Tampilan grid" aria-pressed="true">
+        <i class="fa-solid fa-grip" aria-hidden="true"></i>
+      </button>
+      <button class="view-toggle" id="viewList" title="Tampilan List (L)" aria-label="Tampilan list" aria-pressed="false">
+        <i class="fa-solid fa-list" aria-hidden="true"></i>
+      </button>
+      <button class="kb-hint-btn" id="kbHintBtn" title="Keyboard Shortcuts (?)" aria-label="Lihat keyboard shortcuts">
+        <i class="fa-solid fa-keyboard" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Gallery Grid -->
+  <div class="gallery-grid" id="galleryGrid" role="list" aria-label="Daftar foto"></div>
+
+  <!-- Spinner -->
+  <div class="spinner-wrap" id="spinnerWrap" role="status" aria-label="Memuat foto">
+    <div class="sakura-spinner" aria-hidden="true">
+      <span style="--i:0">🌸</span>
+      <span style="--i:1">🌸</span>
+      <span style="--i:2">🌸</span>
+    </div>
+    <p>Memuat foto...</p>
+  </div>
+
+  <!-- Infinite Scroll Trigger -->
+  <div id="infiniteScrollTrigger" style="height:1px" aria-hidden="true"></div>
+
+  <!-- Load More -->
+  <div class="loadmore-wrap" id="loadmoreWrap" style="display:none">
+    <button class="btn-loadmore" id="loadmoreBtn" aria-label="Muat lebih banyak foto">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      Muat Lebih Banyak
+    </button>
+  </div>
+</section>
+
+<!-- ==================== QUOTE ==================== -->
+<section class="quote-section" aria-label="Kutipan">
+  <div class="quote-inner reveal">
+    <div class="quote-bg" aria-hidden="true"></div>
+    <div class="quote-marks" aria-hidden="true">"</div>
+    <blockquote class="quote-text">
+      Sebuah foto bisa menceritakan ribuan kata<br/>yang tidak bisa terucapkan
+    </blockquote>
+    <div class="quote-divider" aria-hidden="true">🌸</div>
+    <p class="quote-author">— JOSC Gallery</p>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-glow" aria-hidden="true"></div>
+  <div class="footer-wave" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z" fill="var(--footer-bg)"/>
+    </svg>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="#" class="fb-logo" aria-label="JOSC Gallery - Kembali ke atas">
+          <span class="fb-icon" aria-hidden="true">🌸</span>
+          <span class="fb-name">JOSC Gallery</span>
+        </a>
+        <p class="fb-desc">
+          Menyimpan setiap kenangan indah dalam satu tempat yang cantik
+          dan mudah diakses kapan saja.
+        </p>
+        <div class="footer-social" role="list" aria-label="Sosial media">
+          <a href="#" id="footSocIg" class="fsoc-btn" target="_blank" rel="noopener noreferrer" aria-label="Instagram" role="listitem">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+          </a>
+          <a href="#" id="footSocTt" class="fsoc-btn" target="_blank" rel="noopener noreferrer" aria-label="TikTok" role="listitem">
+            <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+          </a>
+          <a href="#" id="footSocTw" class="fsoc-btn" target="_blank" rel="noopener noreferrer" aria-label="Twitter/X" role="listitem">
+            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+          </a>
+          <a href="#" id="footSocFb" class="fsoc-btn" target="_blank" rel="noopener noreferrer" aria-label="Facebook" role="listitem">
+            <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+          </a>
+          <a href="#" id="footSocYt" class="fsoc-btn" target="_blank" rel="noopener noreferrer" aria-label="YouTube" role="listitem">
+            <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Nav Links -->
+      <div class="footer-links-group">
+        <nav class="footer-links" aria-label="Navigasi footer">
+          <h4>Navigasi</h4>
+          <a href="#profile"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> Profil</a>
+          <a href="#about"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> Tentang</a>
+          <a href="#gallery"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> Galeri</a>
+        </nav>
+        <nav class="footer-links" aria-label="Tautan lainnya">
+          <h4>Lainnya</h4>
+          <a href="reine_josc2004.html"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> Admin Panel</a>
+          <a href="#gallery"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> Koleksi Foto</a>
         </nav>
       </div>
-    </div>
-  </header>
 
-  <!-- ============ HERO ============ -->
-  <section class="hero">
-    <div class="wrapper">
-      <div class="hero-badge">
-        <span>🌸</span>
-        <span>Photo Collection</span>
+      <!-- Tech Info -->
+      <div class="footer-info" aria-label="Teknologi yang digunakan">
+        <h4>Teknologi</h4>
+        <div class="fi-item">
+          <i class="fa-solid fa-cloud" aria-hidden="true"></i>
+          <span>Cloudinary Storage</span>
+        </div>
+        <div class="fi-item">
+          <i class="fa-brands fa-cloudflare" aria-hidden="true"></i>
+          <span>Cloudflare Workers</span>
+        </div>
+        <div class="fi-item">
+          <i class="fa-brands fa-github" aria-hidden="true"></i>
+          <span>GitHub Pages</span>
+        </div>
+        <div class="fi-item">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <span>JWT Auth & Aman</span>
+        </div>
       </div>
-      <h2>A World of <em>Softness</em><br>& Delicate Beauty</h2>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
       <p>
-        Koleksi foto indah yang dikurasi dengan penuh cinta,
-        tersaji dalam nuansa lembut yang menenangkan jiwa.
+        Dibuat dengan <i class="fa-solid fa-heart" aria-hidden="true" style="color:var(--pink-400)"></i>
+        &copy; <span id="footerYear"></span> JOSC Gallery. All rights reserved.
       </p>
-      <div class="sakura-divider">
-        <span>🌸</span>
+      <a href="reine_josc2004.html" class="footer-admin-link" aria-label="Admin Panel">
+        <i class="fa-solid fa-lock" aria-hidden="true"></i> Admin Panel
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== LIGHTBOX ==================== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Lihat foto" aria-hidden="true">
+  <div class="lb-overlay" id="lightboxOverlay"></div>
+  <div class="lb-box">
+    <!-- Top Bar -->
+    <div class="lb-top">
+      <div class="lb-counter" id="lbCounter" aria-live="polite">1 / 1</div>
+      <div class="lb-actions">
+        <button class="lb-btn" id="lbShare" title="Bagikan foto" aria-label="Bagikan foto">
+          <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+        </button>
+        <a href="#" class="lb-btn lb-download" id="lbDownload" download title="Unduh foto" aria-label="Unduh foto">
+          <i class="fa-solid fa-download" aria-hidden="true"></i>
+        </a>
+        <button class="lb-btn lb-close" id="closeLightbox" title="Tutup (Esc)" aria-label="Tutup lightbox">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
-  </section>
 
-  <!-- ============ GALLERY SECTION ============ -->
-  <section class="gallery-section">
-    <div class="wrapper">
-
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
-          <div class="filter-buttons" id="filterButtons">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <!-- Categories populated dynamically -->
-          </div>
-          <span class="gallery-count">
-            Menampilkan <span id="photoCount">0</span> foto
-          </span>
-        </div>
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input
-            type="text"
-            class="search-input"
-            id="searchInput"
-            placeholder="Cari foto..."
-            autocomplete="off"
-          />
-        </div>
+    <!-- Image Area -->
+    <div class="lb-img-wrap">
+      <button class="lb-nav lb-prev" id="prevBtn" title="Sebelumnya (←)" aria-label="Foto sebelumnya">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <div class="lb-spinner" id="lightboxSpinner" aria-hidden="true">
+        <div class="spin-ring"></div>
       </div>
-
-      <!-- Photo Grid -->
-      <div class="photo-grid" id="photoGrid">
-        <div class="loading">
-          <div class="spinner"></div>
-          <p>Memuat koleksi foto...</p>
-        </div>
-      </div>
-
+      <img src="" alt="" class="lb-img" id="lightboxImg" draggable="false"/>
+      <button class="lb-nav lb-next" id="nextBtn" title="Selanjutnya (→)" aria-label="Foto selanjutnya">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
     </div>
-  </section>
 
-  <!-- ============ LIGHTBOX ============ -->
-  <div class="lightbox-overlay" id="lightboxOverlay" role="dialog" aria-modal="true">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Tutup">✕</button>
-    <div class="lightbox-box">
-      <div class="lightbox-img-wrap">
-        <img src="" alt="" id="lightboxImg" />
+    <!-- Info -->
+    <div class="lb-info">
+      <h3 class="lb-title" id="lbTitle">—</h3>
+      <p class="lb-meta" id="lbMeta">—</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== KEYBOARD SHORTCUTS ==================== -->
+<div class="kb-panel" id="kbPanel" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" aria-hidden="true">
+  <div class="kb-overlay" id="kbOverlay"></div>
+  <div class="kb-box">
+    <div class="kb-header">
+      <h4><i class="fa-solid fa-keyboard" aria-hidden="true"></i> Keyboard Shortcuts</h4>
+      <button class="kb-close" id="kbClose" aria-label="Tutup panel shortcuts">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="kb-list" role="list">
+      <div class="kb-item" role="listitem"><kbd>←</kbd><kbd>→</kbd><span>Navigasi foto (lightbox)</span></div>
+      <div class="kb-item" role="listitem"><kbd>Esc</kbd><span>Tutup lightbox / panel</span></div>
+      <div class="kb-item" role="listitem"><kbd>F</kbd><span>Fokus ke pencarian</span></div>
+      <div class="kb-item" role="listitem"><kbd>D</kbd><span>Toggle dark mode</span></div>
+      <div class="kb-item" role="listitem"><kbd>G</kbd><span>Tampilan grid</span></div>
+      <div class="kb-item" role="listitem"><kbd>L</kbd><span>Tampilan list</span></div>
+      <div class="kb-item" role="listitem"><kbd>↑</kbd><span>Kembali ke atas</span></div>
+      <div class="kb-item" role="listitem"><kbd>?</kbd><span>Buka/tutup panel ini</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SHARE MODAL ==================== -->
+<div class="share-modal" id="shareModal" role="dialog" aria-modal="true" aria-label="Bagikan foto" aria-hidden="true">
+  <div class="sm-overlay" id="shareOverlay"></div>
+  <div class="sm-box">
+    <div class="sm-header">
+      <h4>🌸 Bagikan Foto</h4>
+      <button class="sm-close" id="shareClose" aria-label="Tutup modal bagikan">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="sm-body">
+      <div class="sm-preview-wrap">
+        <img src="" alt="Preview foto yang akan dibagikan" class="sm-preview" id="sharePreview"/>
+        <p class="sm-title" id="shareTitle">—</p>
       </div>
-      <div class="lightbox-info">
-        <div>
-          <div class="hero-badge" style="margin-bottom:14px;">
-            <span>🌸</span>
-            <span id="lightboxCategory">Category</span>
-          </div>
-          <h2 class="lightbox-title" id="lightboxTitle">Photo Title</h2>
-          <p class="lightbox-meta" id="lightboxMeta">📅 Date</p>
-          <div class="lightbox-divider"></div>
-          <p style="font-size:0.85rem; color:var(--gray-text); line-height:1.7; margin-bottom:24px;">
-            Setiap foto adalah momen yang tersimpan abadi,
-            seperti kelopak sakura yang jatuh dengan elegan.
-          </p>
-        </div>
-        <div class="lightbox-actions">
-          <a href="" id="lightboxDownload" download class="btn-primary">
-            ⬇️ &nbsp;Download Foto
-          </a>
-          <button
-            class="btn-download"
-            id="lightboxClose2"
-            style="justify-content:center;"
-          >
-            ✕ &nbsp;Tutup
-          </button>
-        </div>
+      <div class="sm-btns" role="list" aria-label="Pilih platform berbagi">
+        <a href="#" class="sm-btn sm-wa" id="shareWa" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Bagikan via WhatsApp">
+          <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+          <span>WhatsApp</span>
+        </a>
+        <a href="#" class="sm-btn sm-ig" id="shareIg" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Bagikan ke Instagram">
+          <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+          <span>Instagram</span>
+        </a>
+        <a href="#" class="sm-btn sm-tw" id="shareTw" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Bagikan ke Twitter">
+          <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+          <span>Twitter</span>
+        </a>
+        <a href="#" class="sm-btn sm-fb" id="shareFb" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Bagikan ke Facebook">
+          <i class="fa-brands fa-facebook" aria-hidden="true"></i>
+          <span>Facebook</span>
+        </a>
+      </div>
+      <div class="sm-copy">
+        <input type="text" class="sm-link" id="shareLink" readonly aria-label="Link foto"/>
+        <button class="sm-copy-btn" id="shareCopy" aria-label="Salin link">
+          <i class="fa-solid fa-copy" aria-hidden="true"></i>
+          <span>Salin Link</span>
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- ============ TOAST ============ -->
-  <div class="toast" id="toast">
-    <span id="toastIcon">🌸</span>
-    <span id="toastMsg">Berhasil!</span>
-  </div>
+<!-- ==================== BACK TO TOP ==================== -->
+<button class="back-to-top" id="backToTop" aria-label="Kembali ke atas halaman" title="Kembali ke atas">
+  <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+  <svg class="btt-progress" viewBox="0 0 36 36" aria-hidden="true">
+    <circle class="btt-bg" cx="18" cy="18" r="15.9"/>
+    <circle class="btt-fill" id="bttFill" cx="18" cy="18" r="15.9"/>
+  </svg>
+</button>
 
-  <!-- ============ FOOTER ============ -->
-  <footer>
-    <div class="wrapper">
-      <div class="footer-inner">
-        <div class="footer-logo">🌸 Sakura Gallery</div>
-        <div class="footer-petals">🌸 🌸 🌸</div>
-        <div class="footer-text">
-          Crafted with love &amp; petals · Static Photo Gallery<br />
-          <span style="font-size:0.7rem;">
-            Untuk mengakses panel admin, kunjungi
-            <a href="admin.html" style="color:#c06080; text-decoration:none;">halaman admin</a>
-          </span>
-        </div>
-      </div>
-    </div>
-  </footer>
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- JS -->
-  <script src="js/gallery.js"></script>
+<!-- Scripts -->
+<script src="config.js" defer></script>
+<script src="script.js" defer></script>
 </body>
 </html>
