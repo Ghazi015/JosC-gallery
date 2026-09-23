@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Admin Panel — JOSC Gallery 🌸</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body>
+
+<!-- ==================== LOGIN ==================== -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-deco" aria-hidden="true">
+    <div class="ld-circle ldc1"></div>
+    <div class="ld-circle ldc2"></div>
+    <div class="ld-circle ldc3"></div>
+  </div>
+
+  <div class="login-card">
+    <div class="login-logo" aria-hidden="true">🌸</div>
+    <h1 class="login-title">Admin Panel</h1>
+    <p class="login-sub">JOSC Gallery — Area Terbatas</p>
+
+    <form class="login-form" id="loginForm" novalidate autocomplete="on">
+      <div class="field-group">
+        <label for="loginUser" class="field-label">Username</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-user field-icon" aria-hidden="true"></i>
+          <input
+            type="text"
+            id="loginUser"
+            class="field-input"
+            placeholder="Masukkan username"
+            autocomplete="username"
+            required
+            aria-required="true"
+            aria-label="Username"
+          />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="loginPass" class="field-label">Password</label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-lock field-icon" aria-hidden="true"></i>
+          <input
+            type="password"
+            id="loginPass"
+            class="field-input"
+            placeholder="Masukkan password"
+            autocomplete="current-password"
+            required
+            aria-required="true"
+            aria-label="Password"
+          />
+          <button type="button" class="pass-toggle" id="passToggle" aria-label="Tampilkan/sembunyikan password">
+            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <p class="login-error" id="loginError" role="alert" aria-live="assertive"></p>
+
+      <button type="submit" class="login-btn" id="loginBtn">
+        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+        Masuk ke Dashboard
+      </button>
+    </form>
+
+    <a href="index.html" class="login-back" aria-label="Kembali ke halaman galeri">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      Kembali ke Galeri
+    </a>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD APP ==================== -->
+<div class="admin-app" id="adminApp" style="display:none">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu admin">
+    <div class="sidebar-header">
+      <div class="sb-brand">
+        <span aria-hidden="true">🌸</span> JOSC Admin
+      </div>
+      <button class="sb-close" id="sidebarClose" aria-label="Tutup menu">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <nav class="sb-nav" role="menubar">
+      <button class="sb-item active" data-page="dashboard" role="menuitem" aria-current="page">
+        <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="sb-item" data-page="upload" role="menuitem">
+        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+        <span>Upload Foto</span>
+      </button>
+      <button class="sb-item" data-page="manage" role="menuitem">
+        <i class="fa-solid fa-images" aria-hidden="true"></i>
+        <span>Kelola Foto</span>
+      </button>
+      <button class="sb-item" data-page="profile" role="menuitem">
+        <i class="fa-solid fa-user-pen" aria-hidden="true"></i>
+        <span>Edit Profil</span>
+      </button>
+    </nav>
+
+    <div class="sb-footer">
+      <div class="sb-user-info" id="sbUserInfo">
+        <div class="sb-user-avatar" aria-hidden="true">
+          <i class="fa-solid fa-user-circle"></i>
+        </div>
+        <div class="sb-user-text">
+          <span class="sb-user-name" id="sbUserName">Admin</span>
+          <span class="sb-user-role">Administrator</span>
+        </div>
+      </div>
+      <button class="sb-logout" id="logoutBtn" aria-label="Keluar dari admin panel">
+        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <div class="admin-main" id="adminMain">
+
+    <!-- Topbar -->
+    <header class="admin-topbar" role="banner">
+      <div class="topbar-left">
+        <button class="topbar-hamburger" id="topbarHamburger" aria-label="Buka menu sidebar" aria-controls="sidebar">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+        <div class="topbar-breadcrumb">
+          <span class="topbar-brand" aria-hidden="true">🌸</span>
+          <span class="topbar-sep" aria-hidden="true">/</span>
+          <h1 class="topbar-title" id="topbarTitle">Dashboard</h1>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <a href="index.html" class="topbar-btn" target="_blank" rel="noopener noreferrer" aria-label="Lihat halaman web di tab baru">
+          <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          <span>Lihat Web</span>
+        </a>
+        <div class="topbar-user" aria-label="Pengguna yang login">
+          <div class="tu-avatar" aria-hidden="true">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <span id="topbarUser">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="admin-content" id="adminContent">
+
+      <!-- ── DASHBOARD PAGE ── -->
+      <section class="page-section active" id="pageDashboard" role="main" aria-label="Dashboard">
+        <div class="page-header">
+          <div class="ph-left">
+            <h2>Selamat Datang Kembali! 🌸</h2>
+            <p>Kelola galeri foto kamu dengan mudah dari sini.</p>
+          </div>
+          <div class="ph-right">
+            <button class="btn-refresh-dash" id="btnRefreshDash" aria-label="Refresh dashboard">
+              <i class="fa-solid fa-rotate" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" role="list" aria-label="Statistik">
+          <div class="stat-card" role="listitem">
+            <div class="sc-icon" style="background:linear-gradient(135deg,#f9a8c9,#ec4899)" aria-hidden="true">
+              <i class="fa-solid fa-images"></i>
+            </div>
+            <div class="sc-body">
+              <div class="sc-num" id="dashTotal" aria-label="Total foto">—</div>
+              <div class="sc-label">Total Foto</div>
+            </div>
+            <div class="sc-trend sc-up" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          </div>
+
+          <div class="stat-card" role="listitem">
+            <div class="sc-icon" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)" aria-hidden="true">
+              <i class="fa-solid fa-tags"></i>
+            </div>
+            <div class="sc-body">
+              <div class="sc-num" id="dashCats" aria-label="Jumlah kategori">—</div>
+              <div class="sc-label">Kategori</div>
+            </div>
+            <div class="sc-trend sc-up" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          </div>
+
+          <div class="stat-card" role="listitem">
+            <div class="sc-icon" style="background:linear-gradient(135deg,#6ee7b7,#059669)" aria-hidden="true">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <div class="sc-body">
+              <div class="sc-num" id="dashSize" aria-label="Total ukuran">—</div>
+              <div class="sc-label">Total Ukuran</div>
+            </div>
+            <div class="sc-trend sc-neutral" aria-hidden="true"><i class="fa-solid fa-cloud"></i></div>
+          </div>
+
+          <div class="stat-card" role="listitem">
+            <div class="sc-icon" style="background:linear-gradient(135deg,#fcd34d,#d97706)" aria-hidden="true">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="sc-body">
+              <div class="sc-num" id="dashLast" aria-label="Upload terakhir">—</div>
+              <div class="sc-label">Upload Terakhir</div>
+            </div>
+            <div class="sc-trend sc-neutral" aria-hidden="true"><i class="fa-regular fa-clock"></i></div>
+          </div>
+        </div>
+
+        <!-- Recent Uploads -->
+        <div class="dash-section">
+          <div class="ds-header">
+            <h3><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Upload Terbaru</h3>
+            <button class="ds-more" data-page="manage" aria-label="Lihat semua foto">
+              Lihat Semua <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="recent-grid" id="recentGrid" role="list" aria-label="Foto terbaru">
+            <div class="dash-empty">
+              <i class="fa-regular fa-images" aria-hidden="true"></i>
+              <span>Belum ada foto.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dash-section">
+          <div class="ds-header">
+            <h3><i class="fa-solid fa-bolt" aria-hidden="true"></i> Aksi Cepat</h3>
+          </div>
+          <div class="quick-actions" role="list">
+            <button class="qa-btn" data-page="upload" role="listitem" aria-label="Upload foto baru">
+              <div class="qa-icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+              <div class="qa-text">
+                <span class="qa-title">Upload Foto</span>
+                <span class="qa-desc">Tambah foto baru ke galeri</span>
+              </div>
+            </button>
+            <button class="qa-btn" data-page="manage" role="listitem" aria-label="Kelola foto">
+              <div class="qa-icon" aria-hidden="true"><i class="fa-solid fa-sliders"></i></div>
+              <div class="qa-text">
+                <span class="qa-title">Kelola Foto</span>
+                <span class="qa-desc">Edit, hapus, atau cari foto</span>
+              </div>
+            </button>
+            <button class="qa-btn" data-page="profile" role="listitem" aria-label="Edit profil">
+              <div class="qa-icon" aria-hidden="true"><i class="fa-solid fa-user-pen"></i></div>
+              <div class="qa-text">
+                <span class="qa-title">Edit Profil</span>
+                <span class="qa-desc">Ubah info dan sosial media</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── UPLOAD PAGE ── -->
+      <section class="page-section" id="pageUpload" role="main" aria-label="Upload foto">
+        <div class="page-header">
+          <div class="ph-left">
+            <h2><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Upload Foto</h2>
+            <p>Drag & drop atau klik untuk memilih foto. Maksimal 20 MB per file.</p>
+          </div>
+        </div>
+
+        <!-- Dropzone -->
+        <div class="dropzone" id="dropzone" tabindex="0" role="button"
+             aria-label="Area upload foto — drag & drop atau klik untuk memilih"
+             aria-describedby="dzHint">
+          <div class="dz-inner">
+            <div class="dz-icon" aria-hidden="true">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <p class="dz-title">Drag & Drop foto di sini</p>
+            <p class="dz-sub">atau</p>
+            <label class="dz-browse" for="fileInput">
+              <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+              Pilih File
+            </label>
+            <input
+              type="file"
+              id="fileInput"
+              multiple
+              accept="image/*"
+              style="display:none"
+              aria-label="Pilih foto untuk diupload"
+            />
+            <p class="dz-hint" id="dzHint">
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              JPG, PNG, WEBP, GIF · Maks 20 MB per file
+            </p>
+          </div>
+        </div>
+
+        <!-- Upload Form -->
+        <div class="upload-form" id="uploadForm" style="display:none">
+          <div class="uf-header">
+            <h3>
+              <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+              Detail Foto (<span id="ufCount">0</span> file dipilih)
+            </h3>
+            <button class="uf-clear" id="ufClear" aria-label="Hapus semua file yang dipilih">
+              <i class="fa-solid fa-trash" aria-hidden="true"></i>
+              Hapus Semua
+            </button>
+          </div>
+
+          <div class="uf-shared">
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="ufCategory">
+                  <i class="fa-solid fa-tag" aria-hidden="true"></i>
+                  Kategori (berlaku untuk semua foto)
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-solid fa-tag field-icon" aria-hidden="true"></i>
+                  <input
+                    type="text"
+                    id="ufCategory"
+                    class="field-input"
+                    placeholder="kegiatan, wisuda, liburan..."
+                    list="categoryList"
+                    aria-label="Kategori foto"
+                  />
+                  <datalist id="categoryList"></datalist>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="ufTags">
+                  <i class="fa-solid fa-hashtag" aria-hidden="true"></i>
+                  Tag Tambahan
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-solid fa-hashtag field-icon" aria-hidden="true"></i>
+                  <input
+                    type="text"
+                    id="ufTags"
+                    class="field-input"
+                    placeholder="tag1, tag2, tag3..."
+                    aria-label="Tag tambahan, pisahkan dengan koma"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="file-previews" id="filePreviews" role="list" aria-label="Preview file yang akan diupload"></div>
+
+          <button class="btn-upload-all" id="btnUploadAll" aria-label="Upload semua foto">
+            <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+            Upload Semua Foto
+            <span class="bua-count" id="buaCount"></span>
+          </button>
+        </div>
+
+        <!-- Upload Progress -->
+        <div class="upload-progress-wrap" id="uploadProgressWrap" style="display:none" role="status" aria-live="polite">
+          <div class="up-header">
+            <div class="up-title">
+              <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+              <h4>Proses Upload</h4>
+            </div>
+            <div class="up-count">
+              <span id="upDone">0</span> / <span id="upTotal">0</span> foto
+            </div>
+          </div>
+          <div class="progress-bar-wrap" aria-label="Progress upload">
+            <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <div class="up-list" id="upList" role="list"></div>
+        </div>
+      </section>
+
+      <!-- ── MANAGE PAGE ── -->
+      <section class="page-section" id="pageManage" role="main" aria-label="Kelola foto">
+        <div class="page-header">
+          <div class="ph-left">
+            <h2><i class="fa-solid fa-images" aria-hidden="true"></i> Kelola Foto</h2>
+            <p>Cari, edit, dan hapus foto dari galeri dengan mudah.</p>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="manage-toolbar" role="search">
+          <div class="field-wrap" style="flex:1; min-width:220px">
+            <i class="fa-solid fa-magnifying-glass field-icon" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="manageSearch"
+              class="field-input"
+              placeholder="Cari judul, kategori..."
+              style="padding-left:42px"
+              aria-label="Cari foto"
+            />
+          </div>
+          <select class="field-input" id="manageCatFilter" style="width:200px; padding-left:14px" aria-label="Filter kategori">
+            <option value="all">📂 Semua Kategori</option>
+          </select>
+          <button class="btn-refresh" id="manageRefresh" title="Refresh daftar foto" aria-label="Refresh daftar foto">
+            <i class="fa-solid fa-rotate" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <!-- Manage Info Bar -->
+        <div class="manage-info" aria-live="polite">
+          <span class="mi-count">
+            Menampilkan <strong id="manageShown">0</strong> dari <strong id="manageTotal">0</strong> foto
+          </span>
+          <div class="mi-actions">
+            <button class="btn-select-all" id="btnSelectAll" aria-label="Pilih atau batal pilih semua foto">
+              <i class="fa-regular fa-square-check" aria-hidden="true"></i>
+              Pilih Semua
+            </button>
+            <button class="btn-delete-selected" id="btnDeleteSelected" style="display:none" aria-label="Hapus foto yang dipilih">
+              <i class="fa-solid fa-trash" aria-hidden="true"></i>
+              Hapus Terpilih (<span id="selectedCount">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Admin Grid -->
+        <div class="admin-grid" id="adminGrid" role="list" aria-label="Daftar foto"></div>
+
+        <!-- Manage Spinner -->
+        <div class="spinner-wrap" id="manageSpinner" style="display:none" role="status" aria-label="Memuat foto">
+          <div class="sakura-spinner-sm" aria-hidden="true">🌸 🌸 🌸</div>
+          <span>Memuat foto...</span>
+        </div>
+
+        <!-- Infinite scroll trigger -->
+        <div id="manageTrigger" style="height:1px" aria-hidden="true"></div>
+
+        <!-- Load More -->
+        <div class="loadmore-wrap" id="manageLoadmore" style="display:none">
+          <button class="btn-loadmore" id="manageLoadmoreBtn" aria-label="Muat lebih banyak foto">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Muat Lebih Banyak
+          </button>
+        </div>
+      </section>
+
+      <!-- ── PROFILE PAGE ── -->
+      <section class="page-section" id="pageProfile" role="main" aria-label="Edit profil">
+        <div class="page-header">
+          <div class="ph-left">
+            <h2><i class="fa-solid fa-user-pen" aria-hidden="true"></i> Edit Profil</h2>
+            <p>Ubah informasi yang tampil di halaman utama galeri.</p>
+          </div>
+        </div>
+
+        <div class="profile-form-wrap">
+
+          <!-- Informasi Utama -->
+          <div class="pf-section">
+            <h3 class="pf-title">
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              Informasi Utama
+            </h3>
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="pfName">
+                  <i class="fa-solid fa-signature" aria-hidden="true"></i>
+                  Nama / Judul Website
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-solid fa-signature field-icon" aria-hidden="true"></i>
+                  <input type="text" id="pfName" class="field-input" placeholder="JOSC Gallery" aria-label="Nama atau judul website"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="pfTagline">
+                  <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+                  Tagline
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-solid fa-quote-left field-icon" aria-hidden="true"></i>
+                  <input type="text" id="pfTagline" class="field-input" placeholder="Tagline kamu..." aria-label="Tagline website"/>
+                </div>
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="pfBio">
+                <i class="fa-solid fa-align-left" aria-hidden="true"></i>
+                Bio / Deskripsi
+              </label>
+              <textarea
+                id="pfBio"
+                class="field-input field-textarea"
+                rows="3"
+                placeholder="Ceritakan tentang galeri ini..."
+                aria-label="Bio atau deskripsi galeri"
+              ></textarea>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="pfAvatar">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                URL Foto Avatar
+              </label>
+              <div class="field-wrap">
+                <i class="fa-solid fa-image field-icon" aria-hidden="true"></i>
+                <input type="url" id="pfAvatar" class="field-input" placeholder="https://..." aria-label="URL foto avatar"/>
+              </div>
+              <div class="avatar-preview-wrap" id="avatarPreviewWrap" style="display:none">
+                <img src="" alt="Preview avatar" class="avatar-preview" id="avatarPreview"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sosial Media -->
+          <div class="pf-section">
+            <h3 class="pf-title">
+              <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+              Sosial Media
+            </h3>
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="pfIg">
+                  <i class="fa-brands fa-instagram" style="color:#e1306c" aria-hidden="true"></i>
+                  Instagram
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-brands fa-instagram field-icon" style="color:#e1306c" aria-hidden="true"></i>
+                  <input type="url" id="pfIg" class="field-input" placeholder="https://instagram.com/..." aria-label="URL Instagram"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="pfTt">
+                  <i class="fa-brands fa-tiktok" style="color:#010101" aria-hidden="true"></i>
+                  TikTok
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-brands fa-tiktok field-icon" aria-hidden="true"></i>
+                  <input type="url" id="pfTt" class="field-input" placeholder="https://tiktok.com/..." aria-label="URL TikTok"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="pfTw">
+                  <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                  Twitter / X
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-brands fa-x-twitter field-icon" aria-hidden="true"></i>
+                  <input type="url" id="pfTw" class="field-input" placeholder="https://twitter.com/..." aria-label="URL Twitter atau X"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="pfFb">
+                  <i class="fa-brands fa-facebook" style="color:#1877f2" aria-hidden="true"></i>
+                  Facebook
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-brands fa-facebook field-icon" style="color:#1877f2" aria-hidden="true"></i>
+                  <input type="url" id="pfFb" class="field-input" placeholder="https://facebook.com/..." aria-label="URL Facebook"/>
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="pfYt">
+                  <i class="fa-brands fa-youtube" style="color:#ff0000" aria-hidden="true"></i>
+                  YouTube
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-brands fa-youtube field-icon" style="color:#ff0000" aria-hidden="true"></i>
+                  <input type="url" id="pfYt" class="field-input" placeholder="https://youtube.com/..." aria-label="URL YouTube"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ganti Password -->
+          <div class="pf-section">
+            <h3 class="pf-title">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              Keamanan — Ganti Password
+            </h3>
+            <div class="field-row">
+              <div class="field-group">
+                <label class="field-label" for="pfNewPass">
+                  <i class="fa-solid fa-key" aria-hidden="true"></i>
+                  Password Baru
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-solid fa-key field-icon" aria-hidden="true"></i>
+                  <input
+                    type="password"
+                    id="pfNewPass"
+                    class="field-input"
+                    placeholder="Kosongkan jika tidak ingin ganti"
+                    aria-label="Password baru, kosongkan jika tidak ingin mengubah"
+                  />
+                </div>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="pfConfPass">
+                  <i class="fa-solid fa-key" aria-hidden="true"></i>
+                  Konfirmasi Password
+                </label>
+                <div class="field-wrap">
+                  <i class="fa-solid fa-key field-icon" aria-hidden="true"></i>
+                  <input
+                    type="password"
+                    id="pfConfPass"
+                    class="field-input"
+                    placeholder="Ulangi password baru"
+                    aria-label="Konfirmasi password baru"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Actions -->
+          <div class="pf-actions">
+            <button class="btn-save-profile" id="btnSaveProfile" aria-label="Simpan semua perubahan profil">
+              <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+              Simpan Semua Perubahan
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </div><!-- /admin-content -->
+  </div><!-- /admin-main -->
+</div><!-- /admin-app -->
+
+<!-- ==================== MODAL EDIT ==================== -->
+<div class="modal-overlay" id="editModal" style="display:none" role="dialog" aria-modal="true" aria-label="Edit foto" aria-hidden="true">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h4><i class="fa-solid fa-pen" aria-hidden="true"></i> Edit Foto</h4>
+      <button class="modal-close" id="editModalClose" aria-label="Tutup modal edit">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-preview-wrap">
+        <img src="" alt="Preview foto yang akan diedit" class="modal-preview" id="editPreview"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="editTitle">
+          <i class="fa-solid fa-pen" aria-hidden="true"></i>
+          Judul Foto
+        </label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-pen field-icon" aria-hidden="true"></i>
+          <input type="text" id="editTitle" class="field-input" placeholder="Judul foto" aria-label="Judul foto"/>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="editCategory">
+          <i class="fa-solid fa-tag" aria-hidden="true"></i>
+          Kategori
+        </label>
+        <div class="field-wrap">
+          <i class="fa-solid fa-tag field-icon" aria-hidden="true"></i>
+          <input type="text" id="editCategory" class="field-input" placeholder="Kategori" list="editCatList" aria-label="Kategori foto"/>
+          <datalist id="editCatList"></datalist>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" id="editModalCancel" aria-label="Batal edit">Batal</button>
+      <button class="btn-modal-save" id="editModalSave" aria-label="Simpan perubahan foto">
+        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+        Simpan Perubahan
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL DELETE ==================== -->
+<div class="modal-overlay" id="deleteModal" style="display:none" role="dialog" aria-modal="true" aria-label="Hapus foto" aria-hidden="true">
+  <div class="modal-box modal-sm">
+    <div class="modal-header modal-header-danger">
+      <h4><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Konfirmasi Hapus</h4>
+      <button class="modal-close" id="deleteModalClose" aria-label="Tutup modal hapus">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="delete-icon" aria-hidden="true">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <p id="deleteModalText">Apakah kamu yakin ingin menghapus foto ini? Tindakan ini tidak bisa dibatalkan.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" id="deleteModalCancel" aria-label="Batal hapus">Batal</button>
+      <button class="btn-modal-delete" id="deleteModalConfirm" aria-label="Konfirmasi hapus foto">
+        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+        Ya, Hapus
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="adminToast" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Scripts -->
+<script src="config.js" defer></script>
+<script src="admin.js" defer></script>
+</body>
+</html>
